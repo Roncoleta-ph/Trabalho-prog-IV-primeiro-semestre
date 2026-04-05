@@ -13,48 +13,63 @@ namespace umfg.venda.app.Commands
         public override void Execute(object? parameter)
         {
             var viewModel = parameter as ReceberPedidoViewModel;
+
             if (viewModel == null)
             {
-                MessageBox.Show("Erro de sistema: Não foi possível ler os dados do formulário.");
+                MessageBox.Show("Erro interno ao processar pagamento.");
                 return;
             }
 
-            List<string> erros = new List<string>();
+            List<string> erros = new();
 
-            if (viewModel.TipoCartaoSelecionado == 0)
-                erros.Add("- Selecione a modalidade do cartão (Crédito ou Débito).");
+            if (viewModel.TipoCartaoSelecionado <= 0)
+                erros.Add("- Selecione o tipo de cartão.");
 
-            if (string.IsNullOrWhiteSpace(viewModel.NomeCartao) || viewModel.NomeCartao.Trim().Length < 3)
-                erros.Add("- O Nome no Cartão deve ser preenchido por completo.");
+            if (string.IsNullOrWhiteSpace(viewModel.NomeCartao))
+                erros.Add("- Nome no cartão é obrigatório.");
 
-            if (string.IsNullOrWhiteSpace(viewModel.CVV) || !Regex.IsMatch(viewModel.CVV, @"^\d{3}$"))
-                erros.Add("- O CVV deve conter exatamente 3 dígitos numéricos.");
+            if (string.IsNullOrWhiteSpace(viewModel.NumeroCartao))
+                erros.Add("- Número do cartão é obrigatório.");
+            else if (!ValidarCartaoLuhn(viewModel.NumeroCartao))
+                erros.Add("- Número do cartão inválido.");
 
-            if (viewModel.DataValidade == null)
+            if (!Regex.IsMatch(viewModel.CVV ?? "", @"^\d{3}$"))
+                erros.Add("- CVV deve conter exatamente 3 dígitos.");
+
+            var dataValidade = viewModel.ObterDataValidade();
+
+            if (dataValidade == null)
             {
-                erros.Add("- A data de validade é obrigatória.");
+                erros.Add("- Data de validade deve estar no formato MM/yyyy.");
             }
             else
             {
-                var ultimoDiaMesValidade = new DateTime(viewModel.DataValidade.Value.Year, viewModel.DataValidade.Value.Month, DateTime.DaysInMonth(viewModel.DataValidade.Value.Year, viewModel.DataValidade.Value.Month));
+                var ultimoDia = new DateTime(
+                    dataValidade.Value.Year,
+                    dataValidade.Value.Month,
+                    DateTime.DaysInMonth(dataValidade.Value.Year, dataValidade.Value.Month)
+                );
 
-                if (ultimoDiaMesValidade.Date < DateTime.Now.Date)
-                {
-                    erros.Add("- A data de validade do cartão deve ser superior à data atual.");
-                }
+                if (ultimoDia < DateTime.Now)
+                    erros.Add("- Cartão vencido.");
             }
-
-            if (!ValidarCartaoLuhn(viewModel.NumeroCartao))
-                erros.Add("- O número do cartão informado é inválido.");
 
             if (erros.Any())
             {
-                MessageBox.Show("Atenção, pagamento recusado! Verifique os problemas:\n\n" + string.Join("\n", erros),
-                                "Dados Incorretos", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Pagamento recusado:\n\n" + string.Join("\n", erros),
+                    "Erro",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
                 return;
             }
 
-            MessageBox.Show("Pagamento aprovado e finalizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(
+                "Pagamento realizado com sucesso!",
+                "Sucesso",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
 
             if (Application.Current.MainWindow is MainWindow mainWindow)
             {
@@ -62,31 +77,31 @@ namespace umfg.venda.app.Commands
             }
         }
 
-        private bool ValidarCartaoLuhn(string numeroDigitado)
+        private bool ValidarCartaoLuhn(string numero)
         {
-            if (string.IsNullOrWhiteSpace(numeroDigitado)) return false;
+            string digits = Regex.Replace(numero, @"\D", "");
 
-            string numerosApenas = Regex.Replace(numeroDigitado, "[^0-9]", "");
-
-            if (string.IsNullOrWhiteSpace(numerosApenas) || numerosApenas.Length < 13 || numerosApenas.Length > 19)
+            if (digits.Length < 13 || digits.Length > 19)
                 return false;
 
-            int soma = 0;
-            bool alternar = false;
+            int sum = 0;
+            bool alternate = false;
 
-            for (int i = numerosApenas.Length - 1; i >= 0; i--)
+            for (int i = digits.Length - 1; i >= 0; i--)
             {
-                int n = int.Parse(numerosApenas[i].ToString());
-                if (alternar)
+                int n = int.Parse(digits[i].ToString());
+
+                if (alternate)
                 {
                     n *= 2;
                     if (n > 9) n -= 9;
                 }
-                soma += n;
-                alternar = !alternar;
+
+                sum += n;
+                alternate = !alternate;
             }
 
-            return (soma % 10 == 0);
+            return sum % 10 == 0;
         }
     }
 }

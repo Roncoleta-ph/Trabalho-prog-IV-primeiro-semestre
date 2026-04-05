@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
 using umfg.venda.app.Abstracts;
@@ -11,10 +12,11 @@ namespace umfg.venda.app.ViewModels
     internal sealed class ReceberPedidoViewModel : AbstractViewModel
     {
         private PedidoModel _pedido = new();
+
         private int _tipoCartaoSelecionado = 0;
         private string _numeroCartao = string.Empty;
         private string _cvv = string.Empty;
-        private DateTime? _dataValidade = null; 
+        private string _dataValidade = string.Empty;
         private string _nomeCartao = string.Empty;
 
         public int TipoCartaoSelecionado
@@ -35,7 +37,7 @@ namespace umfg.venda.app.ViewModels
             set => SetField(ref _cvv, value);
         }
 
-        public DateTime? DataValidade
+        public string DataValidade
         {
             get => _dataValidade;
             set => SetField(ref _dataValidade, value);
@@ -58,13 +60,26 @@ namespace umfg.venda.app.ViewModels
         public ReceberPedidoViewModel(UserControl userControl, IObserver observer, PedidoModel pedido)
             : base("Receber Pedido")
         {
-            UserControl = userControl ?? throw new ArgumentNullException(nameof(userControl));
-            MainWindow = observer ?? throw new ArgumentNullException(nameof(observer));
-            Pedido = pedido ?? throw new ArgumentNullException(nameof(pedido));
+            UserControl = userControl;
+            MainWindow = observer;
+            Pedido = pedido;
 
             FinalizarCommand = new FinalizarRecebimentoCommand();
 
             Add(observer);
+        }
+
+        public DateTime? ObterDataValidade()
+        {
+            if (DateTime.TryParseExact(DataValidade, "MM/yyyy",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out DateTime data))
+            {
+                return data;
+            }
+
+            return null;
         }
     }
 }

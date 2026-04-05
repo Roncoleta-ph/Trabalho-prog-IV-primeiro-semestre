@@ -14,7 +14,6 @@
                 <ColumnDefinition Width="0.95*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- LADO ESQUERDO -->
             <Border Grid.Column="0"
                     Margin="24,24,12,24"
                     Background="White"
@@ -135,47 +134,9 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
-
-                    <Border Grid.Row="2"
-                            Margin="0,14,0,0"
-                            Background="#111827"
-                            CornerRadius="14"
-                            Padding="16">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel>
-                                <TextBlock Text="Total do pedido"
-                                           FontSize="14"
-                                           Foreground="#D1D5DB"/>
-                                <TextBlock Text="{Binding TotalPedidoFormatado}"
-                                           FontSize="28"
-                                           FontWeight="Bold"
-                                           Foreground="White"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="1"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center">
-                                <TextBlock Text="{Binding QuantidadeItens}"
-                                           FontSize="26"
-                                           FontWeight="Bold"
-                                           Foreground="White"
-                                           HorizontalAlignment="Right"/>
-                                <TextBlock Text="itens"
-                                           FontSize="13"
-                                           Foreground="#D1D5DB"
-                                           HorizontalAlignment="Right"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
                 </Grid>
             </Border>
 
-            <!-- LADO DIREITO -->
             <Border Grid.Column="1"
                     Margin="12,24,24,24"
                     Background="White"
@@ -198,7 +159,7 @@
                                FontWeight="SemiBold"
                                Foreground="#374151"/>
                     <ComboBox FontSize="16"
-                              SelectedIndex="0"
+                              SelectedIndex="{Binding TipoCartaoSelecionado, Mode=TwoWay}"
                               Margin="0,6,0,14"
                               Padding="8">
                         <ComboBoxItem Content="Selecione um Cartão"/>
@@ -247,7 +208,7 @@
                                FontSize="16"
                                FontWeight="SemiBold"
                                Foreground="#374151"/>
-                    <TextBox Text="{Binding Nome, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Text="{Binding NomeCartao, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              FontSize="16"
                              Margin="0,6,0,24"
                              Padding="10"
@@ -262,7 +223,8 @@
                             Background="#22C55E"
                             Foreground="White"
                             BorderThickness="0"
-                            Command="{Binding ReceberCommand}"/>
+                            Command="{Binding FinalizarCommand}"
+                            CommandParameter="{Binding}"/>
                 </StackPanel>
             </Border>
         </Grid>

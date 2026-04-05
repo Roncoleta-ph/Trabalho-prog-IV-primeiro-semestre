@@ -15,7 +15,6 @@ namespace umfg.venda.app.Commands
         {
             var vm = parameter as ListarProdutosViewModel;
 
-            //o método Any() indica que a lista possui ao menos um registro
             return vm is not null && vm.Pedido.Produtos.Any();
         }
 
@@ -35,8 +34,6 @@ namespace umfg.venda.app.Commands
                 return;
             }
 
-            //testa se o item selecionado pelo usuário consta na lista de itens do pedido
-            //utilizando a passagem instrução lambda no método Any()
             if (!vm.Pedido.Produtos.Any(x => x.Id == vm.ProdutoSelecionado.Id))
             {
                 MessageBox.Show($"{vm.ProdutoSelecionado.Descricao} não foi encontrado no carrinho!");
