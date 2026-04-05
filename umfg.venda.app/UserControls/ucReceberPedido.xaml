@@ -14,119 +14,51 @@
                 <ColumnDefinition Width="0.95*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"
-                    Margin="24,24,12,24"
-                    Background="White"
-                    CornerRadius="18"
-                    Padding="18">
-
+            <Border Grid.Column="0" Margin="24,24,12,24" Background="White" CornerRadius="18" Padding="18">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Margin="0,0,0,12">
-                        <TextBlock Text="UMFG - Tela Principal"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="#1F2937"/>
-                        <TextBlock Text="Produtos do pedido"
-                                   FontSize="14"
-                                   Foreground="#6B7280"
-                                   Margin="0,4,0,0"/>
+                        <TextBlock Text="UMFG - Tela Principal" FontSize="20" FontWeight="Bold" Foreground="#1F2937"/>
+                        <TextBlock Text="Produtos do pedido" FontSize="14" Foreground="#6B7280" Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <Border Grid.Row="1"
-                            Background="#F8FAFC"
-                            CornerRadius="14"
-                            Padding="8">
-
-                        <DataGrid ItemsSource="{Binding Pedido.Produtos}"
-                                  HeadersVisibility="None"
-                                  AutoGenerateColumns="False"
-                                  GridLinesVisibility="None"
-                                  CanUserSortColumns="False"
-                                  CanUserAddRows="False"
-                                  CanUserDeleteRows="False"
-                                  IsReadOnly="True"
-                                  Background="#F8FAFC"
-                                  BorderThickness="0"
-                                  RowBackground="#F8FAFC"
-                                  AlternatingRowBackground="#F1F5F9"
-                                  RowHeight="92">
-
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Padding" Value="8"/>
-                                </Style>
-
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Margin" Value="0,4,0,4"/>
-                                </Style>
-                            </DataGrid.Resources>
-
+                    <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="14" Padding="8">
+                        <DataGrid ItemsSource="{Binding Pedido.Produtos}" HeadersVisibility="None" AutoGenerateColumns="False" 
+                                  GridLinesVisibility="None" CanUserAddRows="False" IsReadOnly="True" Background="Transparent" BorderThickness="0" RowHeight="92">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border Width="68"
-                                                    Height="68"
-                                                    CornerRadius="34"
-                                                    Background="White"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    BorderBrush="#E5E7EB"
-                                                    BorderThickness="1">
-                                                <Ellipse Height="64"
-                                                         Width="64"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center">
+                                            <Border Width="68" Height="68" CornerRadius="34" Background="White" BorderBrush="#E5E7EB" BorderThickness="1">
+                                                <Ellipse Height="64" Width="64">
                                                     <Ellipse.Fill>
-                                                        <ImageBrush ImageSource="{Binding Imagem}"
-                                                                    Stretch="UniformToFill"/>
+                                                        <ImageBrush ImageSource="{Binding Imagem}" Stretch="UniformToFill"/>
                                                     </Ellipse.Fill>
                                                 </Ellipse>
                                             </Border>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-
                                 <DataGridTemplateColumn Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Referencia}"
-                                                           FontWeight="SemiBold"
-                                                           FontSize="18"
-                                                           Foreground="#111827"/>
-                                                <TextBlock Text="{Binding Descricao}"
-                                                           FontSize="14"
-                                                           Foreground="#6B7280"
-                                                           TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Referencia}" FontWeight="SemiBold" FontSize="18" Foreground="#111827"/>
+                                                <TextBlock Text="{Binding Descricao}" FontSize="14" Foreground="#6B7280" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-
                                 <DataGridTemplateColumn Width="120">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock Text="R$"
-                                                           FontWeight="Bold"
-                                                           FontSize="12"
-                                                           Foreground="#6B7280"
-                                                           HorizontalAlignment="Right"/>
-                                                <TextBlock Text="{Binding Valor}"
-                                                           FontWeight="ExtraBold"
-                                                           FontSize="18"
-                                                           Foreground="#111827"
-                                                           HorizontalAlignment="Right"/>
+                                                <TextBlock Text="R$" FontWeight="Bold" FontSize="12" Foreground="#6B7280" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="{Binding Valor, StringFormat=N2}" FontWeight="ExtraBold" FontSize="18" Foreground="#111827" HorizontalAlignment="Right"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -137,94 +69,36 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1"
-                    Margin="12,24,24,24"
-                    Background="White"
-                    CornerRadius="18"
-                    Padding="24">
-
+            <Border Grid.Column="1" Margin="12,24,24,24" Background="White" CornerRadius="18" Padding="24">
                 <StackPanel>
-                    <TextBlock Text="Dados do pagamento"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Foreground="#111827"/>
-                    <TextBlock Text="Preencha os campos abaixo para concluir o recebimento."
-                               FontSize="13"
-                               Foreground="#6B7280"
-                               Margin="0,4,0,20"
-                               TextWrapping="Wrap"/>
+                    <TextBlock Text="Dados do pagamento" FontSize="24" FontWeight="Bold" Foreground="#111827"/>
+                    <TextBlock Text="Preencha os campos abaixo para concluir." FontSize="13" Foreground="#6B7280" Margin="0,4,0,20"/>
 
-                    <TextBlock Text="Selecione um Cartão"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="#374151"/>
-                    <ComboBox FontSize="16"
-                              SelectedIndex="{Binding TipoCartaoSelecionado, Mode=TwoWay}"
-                              Margin="0,6,0,14"
-                              Padding="8">
+                    <TextBlock Text="Selecione um Cartão" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
+                    <ComboBox FontSize="16" SelectedIndex="{Binding TipoCartaoSelecionado, Mode=TwoWay}" Margin="0,6,0,14" Padding="8">
                         <ComboBoxItem Content="Selecione um Cartão"/>
                         <ComboBoxItem Content="Cartão de Crédito"/>
                         <ComboBoxItem Content="Cartão de Débito"/>
                     </ComboBox>
 
-                    <TextBlock Text="Número do Cartão"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="#374151"/>
-                    <TextBox Text="{Binding NumeroCartao, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             FontSize="16"
-                             Margin="0,6,0,14"
-                             Padding="10"
-                             BorderBrush="#D1D5DB"
-                             BorderThickness="1"
-                             Background="#F9FAFB"/>
+                    <TextBlock Text="Número do Cartão (Apenas Números)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
+                    <TextBox Text="{Binding NumeroCartao, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="19" FontSize="16" Margin="0,6,0,14" Padding="10"/>
 
-                    <TextBlock Text="Código CVV"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="#374151"/>
-                    <TextBox Text="{Binding CVV, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             FontSize="16"
-                             Margin="0,6,0,14"
-                             Padding="10"
-                             MaxLength="3"
-                             BorderBrush="#D1D5DB"
-                             BorderThickness="1"
-                             Background="#F9FAFB"/>
+                    <TextBlock Text="Código CVV (Apenas Números)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
+                    <TextBox Text="{Binding CVV, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="3" FontSize="16" Margin="0,6,0,14" Padding="10"/>
 
-                    <TextBlock Text="Data de Validade (MM/yyyy)"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="#374151"/>
-                    <TextBox Text="{Binding DataValidade, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             FontSize="16"
-                             Margin="0,6,0,14"
-                             Padding="10"
-                             BorderBrush="#D1D5DB"
-                             BorderThickness="1"
-                             Background="#F9FAFB"/>
+                    <TextBlock Text="Data Validade (MM/AAAA)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
+                    <TextBox Text="{Binding DataValidade, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="7" FontSize="16" Margin="0,6,0,14" Padding="10"/>
 
-                    <TextBlock Text="Nome no Cartão"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="#374151"/>
-                    <TextBox Text="{Binding NomeCartao, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             FontSize="16"
-                             Margin="0,6,0,24"
-                             Padding="10"
-                             BorderBrush="#D1D5DB"
-                             BorderThickness="1"
-                             Background="#F9FAFB"/>
+                    <TextBlock Text="Nome no Cartão (Apenas Letras)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
+                    <TextBox Text="{Binding NomeCartao, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="ValidarSomenteLetras" MaxLength="50" FontSize="16" Margin="0,6,0,24" Padding="10"/>
 
-                    <Button Content="Receber"
-                            Height="48"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            Background="#22C55E"
-                            Foreground="White"
-                            BorderThickness="0"
-                            Command="{Binding FinalizarCommand}"
-                            CommandParameter="{Binding}"/>
+                    <Button Content="Receber" Height="48" FontSize="18" FontWeight="Bold" Background="#22C55E" Foreground="White" 
+                            Command="{Binding FinalizarCommand}"/>
                 </StackPanel>
             </Border>
         </Grid>

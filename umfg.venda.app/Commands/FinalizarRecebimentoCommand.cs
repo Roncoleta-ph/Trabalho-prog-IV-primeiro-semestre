@@ -16,57 +16,88 @@ namespace umfg.venda.app.Commands
 
             if (viewModel == null)
             {
-                MessageBox.Show("Erro interno ao processar pagamento.");
+                MessageBox.Show("Erro interno ao processar pagamento.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            List<string> erros = new();
+            List<string> erros = new List<string>();
 
             if (viewModel.TipoCartaoSelecionado <= 0)
-                erros.Add("- Selecione o tipo de cartão.");
+                erros.Add("- Selecione o tipo de cartão (Crédito ou Débito).");
+
+            viewModel.NomeCartao = viewModel.NomeCartao?.ToUpper().Trim();
 
             if (string.IsNullOrWhiteSpace(viewModel.NomeCartao))
-                erros.Add("- Nome no cartão é obrigatório.");
-
-            if (string.IsNullOrWhiteSpace(viewModel.NumeroCartao))
-                erros.Add("- Número do cartão é obrigatório.");
-            else if (!ValidarCartaoLuhn(viewModel.NumeroCartao))
-                erros.Add("- Número do cartão inválido.");
-
-            if (!Regex.IsMatch(viewModel.CVV ?? "", @"^\d{3}$"))
-                erros.Add("- CVV deve conter exatamente 3 dígitos.");
-
-            var dataValidade = viewModel.ObterDataValidade();
-
-            if (dataValidade == null)
             {
-                erros.Add("- Data de validade deve estar no formato MM/yyyy.");
+                erros.Add("- Nome no cartão é obrigatório.");
+            }
+            else if (!Regex.IsMatch(viewModel.NomeCartao, @"^[A-ZÀ-Ÿ]{2,}(?:\s[A-ZÀ-Ÿ]{2,})+$"))
+            {
+                erros.Add("- Nome inválido. Informe o nome completo como impresso no cartão.");
+            }
+
+            string numeroLimpo = Regex.Replace(viewModel.NumeroCartao ?? string.Empty, @"\s+", "");
+            if (string.IsNullOrWhiteSpace(numeroLimpo))
+            {
+                erros.Add("- Número do cartão é obrigatório.");
+            }
+            else if (!Regex.IsMatch(numeroLimpo, @"^\d{13,19}$"))
+            {
+                erros.Add("- O número do cartão deve conter entre 13 e 19 dígitos numéricos.");
+            }
+            else if (!ValidarCartaoLuhn(numeroLimpo))
+            {
+                erros.Add("- O número do cartão informado não é válido.");
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.CVV))
+            {
+                erros.Add("- Código CVV é obrigatório.");
+            }
+            else if (!Regex.IsMatch(viewModel.CVV, @"^\d{3}$"))
+            {
+                erros.Add("- O CVV deve conter exatamente 3 dígitos numéricos.");
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.DataValidade))
+            {
+                erros.Add("- Data de validade é obrigatória.");
             }
             else
             {
-                var ultimoDia = new DateTime(
-                    dataValidade.Value.Year,
-                    dataValidade.Value.Month,
-                    DateTime.DaysInMonth(dataValidade.Value.Year, dataValidade.Value.Month)
-                );
+                var dataValidade = viewModel.ObterDataValidade();
 
-                if (ultimoDia < DateTime.Now)
-                    erros.Add("- Cartão vencido.");
+                if (dataValidade == null)
+                {
+                    erros.Add("- Formato de data inválido. Use MM/AAAA.");
+                }
+                else
+                {
+                    var ultimoDiaCartao = new DateTime(
+                        dataValidade.Value.Year,
+                        dataValidade.Value.Month,
+                        DateTime.DaysInMonth(dataValidade.Value.Year, dataValidade.Value.Month)
+                    );
+
+                    if (ultimoDiaCartao < DateTime.Today)
+                    {
+                        erros.Add("- O cartão informado está vencido.");
+                    }
+                }
             }
 
             if (erros.Any())
             {
                 MessageBox.Show(
-                    "Pagamento recusado:\n\n" + string.Join("\n", erros),
-                    "Erro",
+                    "Não foi possível processar o pagamento:\n\n" + string.Join("\n", erros),
+                    "Validação de Pagamento",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
-
                 return;
             }
 
             MessageBox.Show(
-                "Pagamento realizado com sucesso!",
+                "Pagamento processado e finalizado com sucesso!",
                 "Sucesso",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);

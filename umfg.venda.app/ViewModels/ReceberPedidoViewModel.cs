@@ -71,7 +71,9 @@ namespace umfg.venda.app.ViewModels
 
         public DateTime? ObterDataValidade()
         {
-            if (DateTime.TryParseExact(DataValidade, "MM/yyyy",
+            string valorLimpo = _dataValidade?.Replace(" ", "").Replace("-", "").Replace(".", "");
+
+            if (DateTime.TryParseExact(valorLimpo, "MM/yyyy",
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.None,
                 out DateTime data))

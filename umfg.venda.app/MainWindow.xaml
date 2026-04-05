@@ -33,7 +33,7 @@
         
         <Frame Grid.Row="1" 
                Content="{Binding UserControl}"
-               NavigationUIVisibility="Hidden">
+               NavigationUIVisibility="Hidden" Navigated="Frame_Navigated">
         </Frame>
     </Grid>
 </Window>
