@@ -13,6 +13,8 @@ namespace umfg.venda.app.UserControls
     /// <summary>
     /// Interação lógica para ucReceberPedido.xaml
     /// </summary>
+    /// 
+    ///
     public partial class ucReceberPedido : UserControl
     {
         private ucReceberPedido(IObserver observer, PedidoModel pedido)
