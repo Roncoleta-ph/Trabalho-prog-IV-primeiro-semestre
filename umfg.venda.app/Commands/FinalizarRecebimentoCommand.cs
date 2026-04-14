@@ -25,7 +25,7 @@ namespace umfg.venda.app.Commands
             if (viewModel.TipoCartaoSelecionado <= 0)
                 erros.Add("- Selecione o tipo de cartão (Crédito ou Débito).");
 
-            viewModel.NomeCartao = viewModel.NomeCartao?.ToUpper().Trim();
+            viewModel.NomeCartao = viewModel.NomeCartao?.ToUpper().Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(viewModel.NomeCartao))
             {
@@ -33,7 +33,7 @@ namespace umfg.venda.app.Commands
             }
             else if (!Regex.IsMatch(viewModel.NomeCartao, @"^[A-ZÀ-Ÿ]{2,}(?:\s[A-ZÀ-Ÿ]{2,})+$"))
             {
-                erros.Add("- Nome inválido. Informe o nome completo como impresso no cartão.");
+                erros.Add("- Nome inválido. Informe o nome completo como impresso no cartão (mínimo nome e sobrenome).");
             }
 
             string numeroLimpo = Regex.Replace(viewModel.NumeroCartao ?? string.Empty, @"\s+", "");
@@ -47,7 +47,7 @@ namespace umfg.venda.app.Commands
             }
             else if (!ValidarCartaoLuhn(numeroLimpo))
             {
-                erros.Add("- O número do cartão informado não é válido.");
+                erros.Add("- O número do cartão informado não é válido (falhou na verificação Luhn).");
             }
 
             if (string.IsNullOrWhiteSpace(viewModel.CVV))
@@ -59,30 +59,23 @@ namespace umfg.venda.app.Commands
                 erros.Add("- O CVV deve conter exatamente 3 dígitos numéricos.");
             }
 
-            if (string.IsNullOrWhiteSpace(viewModel.DataValidade))
+            if (viewModel.DataValidade == null)
             {
                 erros.Add("- Data de validade é obrigatória.");
             }
             else
             {
-                var dataValidade = viewModel.ObterDataValidade();
+                var dataEscolhida = viewModel.DataValidade.Value;
 
-                if (dataValidade == null)
-                {
-                    erros.Add("- Formato de data inválido. Use MM/AAAA.");
-                }
-                else
-                {
-                    var ultimoDiaCartao = new DateTime(
-                        dataValidade.Value.Year,
-                        dataValidade.Value.Month,
-                        DateTime.DaysInMonth(dataValidade.Value.Year, dataValidade.Value.Month)
-                    );
+                var ultimoDiaCartao = new DateTime(
+                    dataEscolhida.Year,
+                    dataEscolhida.Month,
+                    DateTime.DaysInMonth(dataEscolhida.Year, dataEscolhida.Month)
+                );
 
-                    if (ultimoDiaCartao < DateTime.Today)
-                    {
-                        erros.Add("- O cartão informado está vencido.");
-                    }
+                if (ultimoDiaCartao < DateTime.Today)
+                {
+                    erros.Add($"- O cartão está vencido. Validade informada: {dataEscolhida:MM/yyyy}.");
                 }
             }
 
@@ -108,6 +101,11 @@ namespace umfg.venda.app.Commands
             }
         }
 
+        /// <summary>
+        /// Valida o número do cartão usando o algoritmo de Luhn.
+        /// Cartões válidos (Visa, Mastercard, Elo, etc.) passam por essa verificação.
+        /// Ponto extra do trabalho: validação real do número do cartão.
+        /// </summary>
         private bool ValidarCartaoLuhn(string numero)
         {
             string digits = Regex.Replace(numero, @"\D", "");

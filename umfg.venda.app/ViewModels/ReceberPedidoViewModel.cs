@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
 using umfg.venda.app.Abstracts;
@@ -16,7 +15,7 @@ namespace umfg.venda.app.ViewModels
         private int _tipoCartaoSelecionado = 0;
         private string _numeroCartao = string.Empty;
         private string _cvv = string.Empty;
-        private string _dataValidade = string.Empty;
+        private DateTime? _dataValidade = null;
         private string _nomeCartao = string.Empty;
 
         public int TipoCartaoSelecionado
@@ -37,7 +36,8 @@ namespace umfg.venda.app.ViewModels
             set => SetField(ref _cvv, value);
         }
 
-        public string DataValidade
+        // Agora é DateTime? para usar diretamente com DatePicker
+        public DateTime? DataValidade
         {
             get => _dataValidade;
             set => SetField(ref _dataValidade, value);
@@ -68,24 +68,6 @@ namespace umfg.venda.app.ViewModels
             FinalizarCommand = new FinalizarRecebimentoCommand();
 
             Add(observer);
-        }
-
-        public DateTime? ObterDataValidade()
-        {
-            string valorLimpo = (_dataValidade ?? "")
-                .Replace(" ", "")
-                .Replace("-", "")
-                .Replace(".", "");
-
-            if (DateTime.TryParseExact(valorLimpo, "MM/yyyy",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out DateTime data))
-            {
-                return data;
-            }
-
-            return null;
         }
     }
 }

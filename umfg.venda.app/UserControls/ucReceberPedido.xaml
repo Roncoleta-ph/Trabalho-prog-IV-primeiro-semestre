@@ -27,13 +27,17 @@
                     </StackPanel>
 
                     <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="14" Padding="8">
-                        <DataGrid ItemsSource="{Binding Pedido.Produtos}" HeadersVisibility="None" AutoGenerateColumns="False" 
-                                  GridLinesVisibility="None" CanUserAddRows="False" IsReadOnly="True" Background="Transparent" BorderThickness="0" RowHeight="92">
+                        <DataGrid ItemsSource="{Binding Pedido.Produtos}" HeadersVisibility="None"
+                                  AutoGenerateColumns="False" GridLinesVisibility="None"
+                                  CanUserAddRows="False" IsReadOnly="True"
+                                  Background="Transparent" BorderThickness="0" RowHeight="92">
+
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border Width="68" Height="68" CornerRadius="34" Background="White" BorderBrush="#E5E7EB" BorderThickness="1">
+                                            <Border Width="68" Height="68" CornerRadius="34"
+                                                    Background="White" BorderBrush="#E5E7EB" BorderThickness="1">
                                                 <Ellipse Height="64" Width="64">
                                                     <Ellipse.Fill>
                                                         <ImageBrush ImageSource="{Binding Imagem}" Stretch="UniformToFill"/>
@@ -43,22 +47,24 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+
                                 <DataGridTemplateColumn Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Referencia}" FontWeight="SemiBold" FontSize="18" Foreground="#111827"/>
-                                                <TextBlock Text="{Binding Descricao}" FontSize="14" Foreground="#6B7280" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Referencia}" FontWeight="SemiBold" FontSize="18"/>
+                                                <TextBlock Text="{Binding Descricao}" FontSize="14" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+
                                 <DataGridTemplateColumn Width="120">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock Text="R$" FontWeight="Bold" FontSize="12" Foreground="#6B7280" HorizontalAlignment="Right"/>
-                                                <TextBlock Text="{Binding Valor, StringFormat=N2}" FontWeight="ExtraBold" FontSize="18" Foreground="#111827" HorizontalAlignment="Right"/>
+                                                <TextBlock Text="R$" FontWeight="Bold" FontSize="12"/>
+                                                <TextBlock Text="{Binding Valor, StringFormat=N2}" FontWeight="Bold" FontSize="18"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -71,36 +77,51 @@
 
             <Border Grid.Column="1" Margin="12,24,24,24" Background="White" CornerRadius="18" Padding="24">
                 <StackPanel>
-                    <TextBlock Text="Dados do pagamento" FontSize="24" FontWeight="Bold" Foreground="#111827"/>
-                    <TextBlock Text="Preencha os campos abaixo para concluir." FontSize="13" Foreground="#6B7280" Margin="0,4,0,20"/>
 
-                    <TextBlock Text="Selecione um Cartão" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
-                    <ComboBox FontSize="16" SelectedIndex="{Binding TipoCartaoSelecionado, Mode=TwoWay}" Margin="0,6,0,14" Padding="8">
+                    <TextBlock Text="Dados do pagamento" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Preencha os campos abaixo para concluir." FontSize="13" Margin="0,4,0,20"/>
+
+                    <TextBlock Text="Tipo de Cartão *"/>
+                    <ComboBox SelectedIndex="{Binding TipoCartaoSelecionado}" Margin="0,6,0,14">
                         <ComboBoxItem Content="Selecione um Cartão"/>
                         <ComboBoxItem Content="Cartão de Crédito"/>
                         <ComboBoxItem Content="Cartão de Débito"/>
                     </ComboBox>
 
-                    <TextBlock Text="Número do Cartão (Apenas Números)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
-                    <TextBox Text="{Binding NumeroCartao, UpdateSourceTrigger=PropertyChanged}" 
-                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="19" FontSize="16" Margin="0,6,0,14" Padding="10"/>
+                    <TextBlock Text="Número do Cartão *"/>
+                    <TextBox Text="{Binding NumeroCartao}" MaxLength="19" Margin="0,6,0,14"/>
 
-                    <TextBlock Text="Código CVV (Apenas Números)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
-                    <TextBox Text="{Binding CVV, UpdateSourceTrigger=PropertyChanged}" 
-                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="3" FontSize="16" Margin="0,6,0,14" Padding="10"/>
+                    <TextBlock Text="Código CVV *"/>
+                    <TextBox Text="{Binding CVV}" MaxLength="3" Margin="0,6,0,14"/>
 
-                    <TextBlock Text="Data Validade (MM/AAAA)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
-                    <TextBox Text="{Binding DataValidade, UpdateSourceTrigger=PropertyChanged}" 
-                             PreviewTextInput="ValidarSomenteNumeros" MaxLength="7" FontSize="16" Margin="0,6,0,14" Padding="10"/>
+                    <TextBlock Text="Data de Validade * (Mês/Ano)"/>
+                    <DatePicker SelectedDate="{Binding DataValidade}">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Text">
+                                    <Setter.Value>
+                                        <Binding Path="SelectedDate"
+                                                 RelativeSource="{RelativeSource AncestorType=DatePicker}"
+                                                 StringFormat="MM/yyyy"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
 
-                    <TextBlock Text="Nome no Cartão (Apenas Letras)" FontSize="16" FontWeight="SemiBold" Foreground="#374151"/>
-                    <TextBox Text="{Binding NomeCartao, UpdateSourceTrigger=PropertyChanged}" 
-                             PreviewTextInput="ValidarSomenteLetras" MaxLength="50" FontSize="16" Margin="0,6,0,24" Padding="10"/>
+                    <TextBlock Text="Nome no Cartão *"/>
+                    <TextBox Text="{Binding NomeCartao}" Margin="0,6,0,24"/>
 
-                    <Button Content="Receber" Height="48" FontSize="18" FontWeight="Bold" Background="#22C55E" Foreground="White" 
-                            Command="{Binding FinalizarCommand}"/>
+                    <Button Content="Receber Pagamento"
+                            Height="48"
+                            Background="#22C55E"
+                            Foreground="White"
+                            Command="{Binding FinalizarCommand}"
+                            CommandParameter="{Binding}"/>
+
                 </StackPanel>
             </Border>
+
         </Grid>
     </Viewbox>
 </UserControl>
